@@ -5,6 +5,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
+import matplotlib.pyplot as plt
 
 perch_full = pd.read_csv('https://bit.ly/perch_csv_data')
 
@@ -64,3 +65,24 @@ test_scaled = ss.transform(test_poly)
 ridge = Ridge()
 ridge.fit(train_scaled, train_target)
 print(ridge.score(train_scaled, train_target))
+print(ridge.score(test_scaled, test_target))
+
+train_score = []
+test_score = []
+
+alpha_list = [0.001, 0.01, 0.1, 1, 10, 100]
+for alpha in alpha_list:
+    # 릿지 모델 생성
+    ridge = Ridge(alpha=alpha)
+    # 릿지 모델 훈련
+    ridge.fit(train_scaled, train_target)
+    # 훈련 점수와 테스트 점수를 지정
+    train_score.append(ridge.score(train_scaled, train_target))
+    test_score.append(ridge.score(test_scaled, test_target))
+
+plt.plot(alpha_list, train_score)
+plt.plot(alpha_list, test_score)
+plt.xscale('log')
+plt.xlabel('alpha')
+plt.ylabel('R^2')
+plt.show()
